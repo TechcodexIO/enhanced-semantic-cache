@@ -136,7 +136,7 @@ CORS_ALLOW_METHODS="GET,POST,PUT,DELETE"
 CORS_ALLOW_HEADERS="*"
 
 # Rate Limiting Configuration
-RATE_LIMIT="100/hour"
+RATE_LIMIT="100/minute"
 ```
 
 ### Docker Deployment
