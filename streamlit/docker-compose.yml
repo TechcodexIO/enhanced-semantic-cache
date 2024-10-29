@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  streamlit:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - semantic-cache-network
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    networks:
+      - semantic-cache-network
+
+networks:
+  semantic-cache-network:
+    driver: bridge

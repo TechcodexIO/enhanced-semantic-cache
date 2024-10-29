@@ -1,0 +1,43 @@
+# Use Python 3.9 slim image as base
+FROM python:3.9-slim
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies required for Python packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy both requirements files
+COPY requirements.txt .
+COPY streamlit/requirements.txt streamlit-requirements.txt
+
+# Install Python dependencies from both files
+RUN pip install --no-cache-dir -r requirements.txt -r streamlit-requirements.txt
+
+# Copy the API server files
+COPY api.py .
+COPY config/ config/
+COPY models/ models/
+COPY services/ services/
+
+# Make sure you have updated the .env file with the correct values
+COPY .env .env
+
+# Copy the Streamlit app
+COPY streamlit/ streamlit/
+
+# Copy the startup script
+COPY start_services.sh .
+RUN chmod +x start_services.sh
+
+# Create directory for logs
+RUN mkdir -p /app/logs
+
+# Expose both ports - API (8000), Streamlit (8501), and OTEL (4317)
+EXPOSE 8000 8501 4317
+
+# Set the startup script as the entry point
+CMD ["./start_services.sh"]
